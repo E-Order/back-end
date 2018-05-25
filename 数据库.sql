@@ -14,13 +14,13 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `e-order` DEFAULT CHARACTER SET utf8mb4 ;
+USE `e-order` ;
 
 -- -----------------------------------------------------
 -- Table `mydb`.`ProductCategory`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`ProductCategory` (
+CREATE TABLE IF NOT EXISTS `e-order`.`ProductCategory` (
   `categoryId` INT NOT NULL,
   `categoryName` VARCHAR(64) NOT NULL,
   `categoryType` INT NOT NULL,
@@ -32,7 +32,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`product_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`product_info` (
+CREATE TABLE IF NOT EXISTS `e-order`.`product_info` (
   `product_id` VARCHAR(32) NOT NULL,
   `product_name` VARCHAR(64) NOT NULL,
   `product_price` DECIMAL(8,2) NOT NULL,
@@ -53,7 +53,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`order_master`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`order_master` (
+CREATE TABLE IF NOT EXISTS `e-order`.`order_master` (
   `order_id` VARCHAR(32) NOT NULL,
   `desk_id` INT NOT NULL,
   `buyer_openid` VARCHAR(64) NOT NULL,
@@ -68,7 +68,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`order_detail`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`order_detail` (
+CREATE TABLE IF NOT EXISTS `e-order`.`order_detail` (
   `detail_id` VARCHAR(32) NOT NULL,
   `order_id` VARCHAR(32) NOT NULL,
   `product_quantity` INT NOT NULL,
