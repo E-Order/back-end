@@ -8,22 +8,22 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema e-order
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema e-order
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `e-order` DEFAULT CHARACTER SET utf8mb4;
 USE `e-order` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`ProductCategory`
+-- Table `e-order`.`ProductCategory`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-order`.`product_category` (
   `category_id` INT NOT NULL auto_increment,
   `category_name` VARCHAR(64) NOT NULL,
-  `category_type` INT NOT NULL,
+  `category_type` INT NOT NULL unique,
   `create_time` timestamp not null default current_timestamp comment '创建时间',
   `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
   PRIMARY KEY (`category_id`),
@@ -32,7 +32,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`product_info`
+-- Table `e-order`.`product_info`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-order`.`product_info` (
   `product_id` VARCHAR(32) NOT NULL,
@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `e-order`.`product_info` (
   `product_description` VARCHAR(64) NULL,
   `product_icon` VARCHAR(512) NULL,
   `product_stock` INT NOT NULL DEFAULT 0,
+  `product_status` TINYINT(3) default 0, 
   `category_type` INT NOT NULL,
   `create_time` timestamp not null default current_timestamp comment '创建时间',
   `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
@@ -48,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `e-order`.`product_info` (
   INDEX `category_type_idx` (`category_type` ASC),
   CONSTRAINT `category_type`
     FOREIGN KEY (`category_type`)
-    REFERENCES `e-order`.`product_category` (`category_id`)
+    REFERENCES `e-order`.`product_category` (`category_type`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -72,8 +73,8 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`order_detail`
--- -----------------------------------------------------
+-- Table `e-order`.`order_detail`
+-- ---------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-order`.`order_detail` (
   `detail_id` VARCHAR(32) NOT NULL,
   `order_id` VARCHAR(32) NOT NULL,
