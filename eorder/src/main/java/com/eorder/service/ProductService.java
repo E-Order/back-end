@@ -1,7 +1,7 @@
 package com.eorder.service;
 
 import com.eorder.dataobject.ProductInfo;
-//import com.eorder.dto.CartDTO;
+import com.eorder.dto.CartDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,10 +31,9 @@ public interface ProductService {
 
 
     //加库存
-
-   // void increaseStock(List<CartDTO> cartDTOList);
+    void increaseStock(List<CartDTO> cartDTOList);
 
     //减库存
-    //void decreaseStock(List<CartDTO> cartDTOList);
+    void decreaseStock(List<CartDTO> cartDTOList);
 
 }

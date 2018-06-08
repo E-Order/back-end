@@ -1,10 +1,10 @@
 package com.eorder.service.impl;
 
 import com.eorder.dataobject.ProductInfo;
-//import com.imooc.dto.CartDTO;
+import com.eorder.dto.CartDTO;
 import com.eorder.enums.ProductStatusEnum;
-//import com.imooc.enums.ResultEnum;
-//import com.imooc.exception.SellException;
+import com.eorder.enums.ResultEnum;
+import com.eorder.exception.SellException;
 import com.eorder.repository.ProductInfoRepository;
 import com.eorder.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,16 +43,25 @@ public class ProductServiceImpl implements ProductService{
         return repository.save(productInfo);
     }
 
-    /*@Override
+    @Override
     @Transactional
     public void increaseStock(List<CartDTO> cartDTOList) {
-
+        for (CartDTO cartDTO : cartDTOList) {
+            ProductInfo productInfo = repository.findOne(cartDTO.getProductId());
+            if (productInfo == null) {
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            Integer result = productInfo.getProductStock() + cartDTO.getProductQuantity();
+            productInfo.setProductStock(result);
+            repository.save(productInfo);
+        }
     }
 
     @Override
     @Transactional
     public void decreaseStock(List<CartDTO> cartDTOList) {
         for (CartDTO cartDTO : cartDTOList) {
+            //查询
             ProductInfo productInfo = repository.findOne(cartDTO.getProductId());
             if (productInfo == null) {
                 throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
@@ -64,5 +73,5 @@ public class ProductServiceImpl implements ProductService{
             productInfo.setProductStock(result);
             repository.save(productInfo);
         }
-    }*/
+    }
 }
