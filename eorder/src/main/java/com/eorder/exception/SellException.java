@@ -1,7 +1,9 @@
 package com.eorder.exception;
 
 import com.eorder.enums.ResultEnum;
+import lombok.Data;
 
+@Data
 public class SellException extends RuntimeException {
     private Integer code;
 

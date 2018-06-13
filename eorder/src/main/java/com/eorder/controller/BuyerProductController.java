@@ -5,6 +5,7 @@ import com.eorder.VO.ProductVO;
 import com.eorder.VO.ResultVO;
 import com.eorder.dataobject.ProductCategory;
 import com.eorder.dataobject.ProductInfo;
+import com.eorder.exception.SellException;
 import com.eorder.service.CategoryService;
 import com.eorder.service.ProductService;
 import com.eorder.utils.ResultVOUtil;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 买家商品
+ * 买家端商品
  */
 @RestController
 @RequestMapping("/buyer/product")
@@ -33,42 +34,46 @@ public class BuyerProductController {
 
     @GetMapping("/list")
     public ResultVO list() {
-        //1.查询所有上架商品
-        List<ProductInfo> productInfoList = productService.findUpAll();
-        //2.查询类目（一次性查询）
-        List<Integer> categoryTypeList = new ArrayList<>();
-        //传统方法
-        for (ProductInfo productInfo : productInfoList) {
-            categoryTypeList.add(productInfo.getCategoryType());
-        }
-        //精简方法(java8 , lambda)
-       // productInfoList.stream().map(e ->e.getCategoryType()).collect(Collectors.toList());
-
-        List<ProductCategory> productCategoryList =  categoryService.findByCategoryTypeIn(categoryTypeList);
-
-        //3.数据拼装
-        List<ProductVO> productVOList = new ArrayList<>();
-        for (ProductCategory productCategory: productCategoryList) {
-            //类目
-            ProductVO productVO = new ProductVO();
-            productVO.setCategoryType(productCategory.getCategoryType());
-            productVO.setCategoryName(productCategory.getCategoryName());
-
-            List<ProductInfoVO> productInfoVOList = new ArrayList<>();
-            //类目下的商品
-            for (ProductInfo productInfo:productInfoList) {
-                if (productInfo.getCategoryType().equals(productCategory.getCategoryType())) {
-                    ProductInfoVO productInfoVO = new ProductInfoVO();
-                    //属性的复制
-                    BeanUtils.copyProperties(productInfo, productInfoVO);
-                    productInfoVOList.add(productInfoVO);
-                }
+        try {
+            //1.查询所有上架商品
+            List<ProductInfo> productInfoList = productService.findUpAll();
+            //2.查询类目（一次性查询）
+            List<Integer> categoryTypeList = new ArrayList<>();
+            //传统方法
+            for (ProductInfo productInfo : productInfoList) {
+                categoryTypeList.add(productInfo.getCategoryType());
             }
+            //精简方法(java8 , lambda)
+            // productInfoList.stream().map(e ->e.getCategoryType()).collect(Collectors.toList());
 
-            productVO.setProductInfoVOList(productInfoVOList);
-            productVOList.add(productVO);
+            List<ProductCategory> productCategoryList =  categoryService.findByCategoryTypeIn(categoryTypeList);
+
+            //3.数据拼装
+            List<ProductVO> productVOList = new ArrayList<>();
+            for (ProductCategory productCategory: productCategoryList) {
+                //类目
+                ProductVO productVO = new ProductVO();
+                productVO.setCategoryType(productCategory.getCategoryType());
+                productVO.setCategoryName(productCategory.getCategoryName());
+
+                List<ProductInfoVO> productInfoVOList = new ArrayList<>();
+                //类目下的商品
+                for (ProductInfo productInfo:productInfoList) {
+                    if (productInfo.getCategoryType().equals(productCategory.getCategoryType())) {
+                        ProductInfoVO productInfoVO = new ProductInfoVO();
+                        //属性的复制
+                        BeanUtils.copyProperties(productInfo, productInfoVO);
+                        productInfoVOList.add(productInfoVO);
+                    }
+                }
+
+                productVO.setProductInfoVOList(productInfoVOList);
+                productVOList.add(productVO);
+            }
+            return ResultVOUtil.success(productVOList);
+        } catch (SellException e) {
+            return ResultVOUtil.error(e.getCode(), e.getMessage());
         }
 
-        return ResultVOUtil.success(productVOList);
     }
 }

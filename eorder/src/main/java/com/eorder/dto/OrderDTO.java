@@ -3,7 +3,9 @@ package com.eorder.dto;
 import com.eorder.dataobject.OrderDetail;
 import com.eorder.enums.OrderStatusEnum;
 import com.eorder.enums.PayStatusEnum;
+import com.eorder.utils.EnumUtil;
 import com.eorder.utils.serializer.Date2LongSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -48,4 +50,13 @@ public class OrderDTO {
      */
 
     List<OrderDetail> orderDetailList;
+
+    /*@JsonIgnore
+    public OrderStatusEnum getOrderStatusEnum() {
+        return EnumUtil.getByCode(orderStatus, OrderStatusEnum.class);
+    }
+    @JsonIgnore
+    public PayStatusEnum getPayStatusEnum() {
+        return EnumUtil.getByCode(payStatus, PayStatusEnum.class);
+    }*/
 }
