@@ -60,7 +60,6 @@ public class BuyerOrderController {
                         bindingResult.getFieldError().getDefaultMessage());
             }
 
-
             OrderDTO orderDTO = OrderForm2OrderDTOConverter.convert(orderForm);
             if (CollectionUtils.isEmpty(orderDTO.getOrderDetailList())) {
                 log.error("【创建订单】购物车不能为空");
