@@ -33,7 +33,10 @@ public class ProductInfo {
     /** 类目编号. */
     private Integer categoryType;
 
+<<<<<<< HEAD
     /*创建时间. */
+=======
+>>>>>>> b56afd1175b8bc74c43da2427a0091841cd3a43f
     private Date createTime;
 
     /** 更新时间. */
