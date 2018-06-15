@@ -17,5 +17,6 @@ public interface CategoryService {
     List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList);
     //新增和更新类目
     ProductCategory save(ProductCategory productCategory);
-
+    //删除类目
+    void delete(ProductCategory productCategory);
 }

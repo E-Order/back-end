@@ -44,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
         String orderId = KeyUtil.getUniqueKey();
         //1.将主表写入数据库
         OrderMaster orderMaster = new OrderMaster();
+        orderDTO.setOrderId(orderId);
         BeanUtils.copyProperties(orderDTO,orderMaster);
         orderMaster.setOrderId(orderId);
         orderMaster.setOrderStatus(OrderStatusEnum.New.getCode());
@@ -108,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
         OrderMaster orderMaster = orderMasterRepository.findOne(orderDTO.getOrderId());
         //判断订单状态
         if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.New.getCode())) {
-            log.error("【取消订单】 订单状态不争取, orderId={}, orderStatue={}", orderMaster.getOrderId(),orderMaster.getOrderStatus());
+            log.error("【取消订单】 订单状态不正确, orderId={}, orderStatue={}", orderMaster.getOrderId(),orderMaster.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
         }
         //修改订单状态
@@ -179,5 +180,14 @@ public class OrderServiceImpl implements OrderService {
         }
         orderDTO.setPayStatus(PayStatusEnum.SUCCESS.getCode());
         return orderDTO;
+    }
+
+    @Override
+    public Page<OrderDTO> findList(Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findAll(pageable);
+
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+        Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
+        return orderDTOPage;
     }
 }

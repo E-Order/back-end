@@ -3,6 +3,7 @@ package com.eorder.dto;
 import com.eorder.dataobject.OrderDetail;
 import com.eorder.enums.OrderStatusEnum;
 import com.eorder.enums.PayStatusEnum;
+import com.eorder.VO.OrderDetailVO;
 import com.eorder.utils.serializer.Date2LongSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -12,8 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-//@JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderDTO {
+public class OrderDetailDTO {
 
     /** 订单id. */
     private String orderId;
@@ -45,6 +45,5 @@ public class OrderDTO {
      * 设置初始值，就不会返回null
      */
 
-    List<OrderDetail> orderDetailList;
-
+    List<OrderDetailVO> orderDetailVOList;
 }

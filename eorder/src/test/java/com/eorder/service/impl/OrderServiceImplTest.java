@@ -77,7 +77,7 @@ public class OrderServiceImplTest {
 
     @Test
     public void finish() {
-        OrderDTO orderDTO = orderService.findOne("1528013215952949685");
+        OrderDTO orderDTO = orderService.findOne("1528564012963172848");
         OrderDTO result = orderService.finish(orderDTO);
         Assert.assertEquals(result.getOrderStatus(), OrderStatusEnum.FINISHED.getCode());
     }
@@ -87,5 +87,13 @@ public class OrderServiceImplTest {
         OrderDTO orderDTO = orderService.findOne("1528013215952949685");
         OrderDTO result = orderService.paid(orderDTO);
         Assert.assertEquals(result.getPayStatus(), PayStatusEnum.SUCCESS.getCode());
+    }
+
+    @Test
+    public void list() {
+        PageRequest request = new PageRequest(0,2);
+        Page<OrderDTO> orderDTOPage = orderService.findList(request);
+        //Assert.assertNotEquals(0,orderDTOPage.getTotalElements());
+        Assert.assertTrue("查询该商家的订单列表",orderDTOPage.getTotalElements() > 0);
     }
 }

@@ -1,11 +1,14 @@
 package com.eorder.dataobject;
 
+import com.eorder.utils.serializer.Date2LongSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 商品类目product_catagory
@@ -22,6 +25,13 @@ public class ProductCategory {
     private String categoryName;
     /** 类目编号. */
     private Integer categoryType;
+    /*创建时间. */
+    @JsonSerialize(using = Date2LongSerializer.class)
+    private Date createTime;
+
+    /** 更新时间. */
+    @JsonSerialize(using = Date2LongSerializer.class)
+    private Date updateTime;
 
     public ProductCategory(){
     }
