@@ -3,19 +3,11 @@ package com.eorder.dto;
 import com.eorder.dataobject.OrderDetail;
 import com.eorder.enums.OrderStatusEnum;
 import com.eorder.enums.PayStatusEnum;
-<<<<<<< HEAD
 import com.eorder.utils.serializer.Date2LongSerializer;
-=======
-import com.eorder.utils.EnumUtil;
-import com.eorder.utils.serializer.Date2LongSerializer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
->>>>>>> b56afd1175b8bc74c43da2427a0091841cd3a43f
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,15 +47,4 @@ public class OrderDTO {
 
     List<OrderDetail> orderDetailList;
 
-<<<<<<< HEAD
-=======
-    /*@JsonIgnore
-    public OrderStatusEnum getOrderStatusEnum() {
-        return EnumUtil.getByCode(orderStatus, OrderStatusEnum.class);
-    }
-    @JsonIgnore
-    public PayStatusEnum getPayStatusEnum() {
-        return EnumUtil.getByCode(payStatus, PayStatusEnum.class);
-    }*/
->>>>>>> b56afd1175b8bc74c43da2427a0091841cd3a43f
 }

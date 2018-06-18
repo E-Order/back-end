@@ -11,10 +11,11 @@ public interface CategoryService {
 
     //通过Id查询类目信息
     ProductCategory findOne(Integer categoryId);
-    //查询所有类目
-    List<ProductCategory> findAll();
-    // 通过type类型查询
-    List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList);
+    //查询某商家所有类目
+    List<ProductCategory> findAllBySellerId(String sellerId);
+
+    //通过type和sellerId查询
+    ProductCategory findBySellerIdAndCategoryType(String sellerId, Integer categoryType);
     //新增和更新类目
     ProductCategory save(ProductCategory productCategory);
     //删除类目

@@ -61,12 +61,12 @@ public class BuyerOrderController {
             }
 
             OrderDTO orderDTO = OrderForm2OrderDTOConverter.convert(orderForm);
+            String sellerId = orderForm.getSellerId();
             if (CollectionUtils.isEmpty(orderDTO.getOrderDetailList())) {
                 log.error("【创建订单】购物车不能为空");
                 throw new SellException(ResultEnum.CART_EMPTY);
             }
-            OrderDTO createResult = orderService.create(orderDTO);
-
+            OrderDTO createResult = orderService.create(orderDTO, sellerId);
             Map<String, String> map = new HashMap<>();
             map.put("orderId", createResult.getOrderId());
             return ResultVOUtil.success(map);
@@ -77,6 +77,7 @@ public class BuyerOrderController {
     //查询订单列表
     @GetMapping("/list")
     public ResultVO<List<OrderDTO>> list(@RequestParam("openid") String openid,
+                                         @RequestParam("sellerId") String sellerId,
                                          @RequestParam(value = "page", defaultValue = "0") Integer page,
                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
         try {
@@ -85,7 +86,7 @@ public class BuyerOrderController {
                 throw new SellException(ResultEnum.PARAM_ERROR);
             }
             PageRequest request = new PageRequest(page, size);
-            Page<OrderDTO> orderDTOPage = orderService.findList(openid,request);
+            Page<OrderDTO> orderDTOPage = orderService.findListByBuyerOpenidAndSellerId(openid, sellerId,request);
 
             return ResultVOUtil.success(orderDTOPage.getContent());
         } catch (SellException e) {
@@ -117,6 +118,7 @@ public class BuyerOrderController {
                            @RequestParam("orderId") String orderId) {
 
         try {
+
             buyerService.cancelOrder(openid,orderId);
             return ResultVOUtil.success();
         } catch (SellException e) {

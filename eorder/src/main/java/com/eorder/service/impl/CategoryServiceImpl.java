@@ -23,13 +23,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<ProductCategory> findAll() {
-        return repository.findAll();
+    public List<ProductCategory> findAllBySellerId(String sellerId) {
+        return repository.findBySellerId(sellerId);
     }
 
     @Override
-    public List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList) {
-        return repository.findByCategoryTypeIn(categoryTypeList);
+    public ProductCategory findBySellerIdAndCategoryType(String sellerId, Integer categoryType) {
+        return repository.findBySellerIdAndCategoryType(sellerId,categoryType);
     }
 
     @Override

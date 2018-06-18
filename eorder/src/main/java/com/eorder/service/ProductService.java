@@ -11,13 +11,13 @@ import java.util.List;
  * 商品
  */
 public interface ProductService {
-    ProductInfo findOne(String productId);
 
+    ProductInfo findOne(String productId);
     /**
      * 查询所有在架商品列表
      * @return
      */
-    List<ProductInfo> findUpAll();
+    List<ProductInfo> findUpAllBySellerId(String sellerId);
 
 
     /**
@@ -25,8 +25,9 @@ public interface ProductService {
      * @param pageable
      * @return
      */
-    Page<ProductInfo> findAll(Pageable pageable);
+    Page<ProductInfo> findAllBySellerId(String sellerId, Pageable pageable);
 
+    Page<ProductInfo> findByTypeAndSellerId(Integer categoryType, String sellerId,Pageable pageable);
     ProductInfo save(ProductInfo productInfo);
 
 
@@ -38,7 +39,9 @@ public interface ProductService {
 
 
     //上架
-    ProductInfo onSale(String productId);
+    ProductInfo onSale(String productId, String sellerId);
     //下架
-    ProductInfo offSale(String productId);
+    ProductInfo offSale(String productId, String sellerId);
+
+    long countProduct(Integer categoryType, String sellerId);
 }

@@ -17,12 +17,14 @@ public enum ResultEnum {
     ORDER_PAY_STATUS_ERROR(17, "订单支付状态不正确"),
     CART_EMPTY(18, "购物车为空"),
     ORDER_OWNER_ERROR(19, "该订单不属于当前用户"),
-<<<<<<< HEAD
     PRODUCT_STATUS_ERROR(20,"商品状态不正确"),
-    CATEGORY_NOT_EXIST(21,"商品类目不存在")
-=======
-    PRODUCT_STATUS_ERROR(20,"商品状态不正确")
->>>>>>> b56afd1175b8bc74c43da2427a0091841cd3a43f
+    CATEGORY_NOT_EXIST(21,"商品类目不存在"),
+    USERNAME_ALREADY_EXIST(22,"该用户名已经被注册"),
+    SELLER_NOT_EXIST(23,"该商家不存在"),
+    PASSWORD_ERROR(24,"密码与用户名不匹配"),
+    USER_NOT_LOGIN(25,"用户未登录"),
+    CATERGORY_OWNER_ERROR(26,"该类目不属于当前用户"),
+    PRODUCT_OWNER_ERROR(27,"该商品不属于当前用户"),
     ;
 
     private Integer code;

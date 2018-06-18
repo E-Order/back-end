@@ -29,13 +29,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductInfo> findUpAll() {
-       return repository.findByProductStatus(ProductStatusEnum.UP.getCode());
+    public List<ProductInfo> findUpAllBySellerId(String sellerId) {
+       return repository.findByProductStatusAndSellerId(ProductStatusEnum.UP.getCode(), sellerId);
     }
 
     @Override
-    public Page<ProductInfo> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<ProductInfo> findAllBySellerId(String sellerId, Pageable pageable) {
+        return repository.findBySellerId(sellerId, pageable);
+    }
+
+    @Override
+    public Page<ProductInfo> findByTypeAndSellerId(Integer categoryType, String sellerId,Pageable pageable) {
+        return repository.findByCategoryTypeAndSellerId(categoryType, sellerId,pageable);
     }
 
     @Override
@@ -76,10 +81,13 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductInfo onSale(String productId) {
+    public ProductInfo onSale(String productId, String sellerId) {
         ProductInfo productInfo = repository.findOne(productId);
         if (productInfo == null) {
             throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+        }
+        if (!productInfo.getSellerId().equals(sellerId)) {
+            throw new SellException(ResultEnum.PRODUCT_OWNER_ERROR);
         }
         if (productInfo.getProductStatus() == ProductStatusEnum.UP.getCode()) {
             throw new SellException(ResultEnum.PRODUCT_STATUS_ERROR);
@@ -90,10 +98,13 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductInfo offSale(String productId) {
+    public ProductInfo offSale(String productId, String sellerId) {
         ProductInfo productInfo = repository.findOne(productId);
         if (productInfo == null) {
             throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+        }
+        if (!productInfo.getSellerId().equals(sellerId)) {
+            throw new SellException(ResultEnum.PRODUCT_OWNER_ERROR);
         }
         if (productInfo.getProductStatus() == ProductStatusEnum.DOWN.getCode()) {
             throw new SellException(ResultEnum.PRODUCT_STATUS_ERROR);
@@ -101,5 +112,10 @@ public class ProductServiceImpl implements ProductService{
         //更新
         productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
         return repository.save(productInfo);
+    }
+
+    @Override
+    public long countProduct(Integer categoryType, String sellerId) {
+        return repository.countProductInfosByAndSellerIdAndCategoryType(sellerId, categoryType);
     }
 }

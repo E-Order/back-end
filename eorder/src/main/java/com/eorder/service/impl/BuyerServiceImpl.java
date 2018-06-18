@@ -32,7 +32,6 @@ public class BuyerServiceImpl implements BuyerService {
             log.error("【取消订单】查不到该订单, orderId={}", orderId);
             throw new SellException(ResultEnum.ORDER_NOT_EXIST);
         }
-
         return orderService.cancel(orderDTO);
     }
 

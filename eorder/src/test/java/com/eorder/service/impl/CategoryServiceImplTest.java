@@ -27,15 +27,10 @@ public class CategoryServiceImplTest {
 
     @Test
     public void findAll() {
-        List<ProductCategory> productCategoryList = categoryService.findAll();
+        List<ProductCategory> productCategoryList = categoryService.findAllBySellerId("123");
         Assert.assertNotEquals(0, productCategoryList.size());
     }
 
-    @Test
-    public void findByCategoryTypeIn() {
-        List<ProductCategory> productCategoryList = categoryService.findByCategoryTypeIn(Arrays.asList(1,2,3,4));
-        Assert.assertNotEquals(0,productCategoryList.size());
-    }
 
     @Test
     public void save() {

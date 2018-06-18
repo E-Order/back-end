@@ -22,6 +22,9 @@ public class OrderMaster {
     /** 桌号. */
     private Integer deskId;
 
+    /** 商家id. */
+    private String sellerId;
+
     /** 买家微信id. */
     private String buyerOpenid;
 

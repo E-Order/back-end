@@ -18,6 +18,9 @@ public class OrderForm {
     @NotEmpty(message = "桌号必填")
     private String deskId;
 
+    @NotEmpty(message = "商家ID必填")
+    private String sellerId;
+
     /**
      * 买家微信openid
      */
@@ -30,6 +33,7 @@ public class OrderForm {
      */
     @NotEmpty(message = "总价必填")
     private String amount;
+
 
 
     /**

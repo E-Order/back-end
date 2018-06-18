@@ -17,7 +17,6 @@ public class OrderForm2OrderDTOConverter {
 
     public static OrderDTO convert(OrderForm orderForm) {
         Gson gson = new Gson();
-
         OrderDTO orderDTO = new OrderDTO();
 
         orderDTO.setDeskId(new Integer(orderForm.getDeskId()));

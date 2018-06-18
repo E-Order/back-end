@@ -3,11 +3,7 @@ package com.eorder.enums;
 import lombok.Getter;
 
 @Getter
-<<<<<<< HEAD
 public enum PayStatusEnum{
-=======
-public enum PayStatusEnum implements CodeEnum{
->>>>>>> b56afd1175b8bc74c43da2427a0091841cd3a43f
     Wait(0,"等待支付"),
     SUCCESS(1,"支付成功");
 

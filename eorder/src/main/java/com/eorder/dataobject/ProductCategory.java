@@ -25,6 +25,8 @@ public class ProductCategory {
     private String categoryName;
     /** 类目编号. */
     private Integer categoryType;
+    /** 商家Id . */
+    private String sellerId;
     /*创建时间. */
     @JsonSerialize(using = Date2LongSerializer.class)
     private Date createTime;

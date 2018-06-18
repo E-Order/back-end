@@ -12,6 +12,7 @@ import com.eorder.exception.SellException;
 import com.eorder.service.OrderService;
 import com.eorder.service.ProductService;
 import com.eorder.utils.ResultVOUtil;
+import com.eorder.utils.SellerIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +47,12 @@ public class SellerOrderController {
      */
     @GetMapping("/list")
     public ResultVO<List<OrderDTO>> list(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                         @RequestParam(value = "size", defaultValue = "10") Integer size,
+                                         HttpServletRequest httprequest) {
+        String sellerId = SellerIdUtil.getSellerId(httprequest);
         try{
             PageRequest request = new PageRequest(page, size);
-            Page<OrderDTO> orderDTOPage = orderService.findList(request);
-
+            Page<OrderDTO> orderDTOPage = orderService.findListBySellerId(sellerId,request);
             return ResultVOUtil.success(orderDTOPage.getContent());
         } catch (SellException e) {
             log.error("【卖家端查看订单】 查询失败 e={}");

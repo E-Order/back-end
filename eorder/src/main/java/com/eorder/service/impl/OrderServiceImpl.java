@@ -40,17 +40,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO create(OrderDTO orderDTO) {
+    public OrderDTO create(OrderDTO orderDTO, String sellId) {
         String orderId = KeyUtil.getUniqueKey();
         //1.将主表写入数据库
         OrderMaster orderMaster = new OrderMaster();
         orderDTO.setOrderId(orderId);
         BeanUtils.copyProperties(orderDTO,orderMaster);
         orderMaster.setOrderId(orderId);
+        orderMaster.setSellerId(sellId);
         orderMaster.setOrderStatus(OrderStatusEnum.New.getCode());
         orderMaster.setPayStatus(PayStatusEnum.Wait.getCode());
 
         orderMasterRepository.save(orderMaster);
+
         for (OrderDetail orderDetail:orderDTO.getOrderDetailList()){
             ProductInfo productInfo = productService.findOne(orderDetail.getProductId());
             if (productInfo == null) {
@@ -60,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
             //3.订单详情入库
             orderDetail.setDetailId(KeyUtil.getUniqueKey());
             orderDetail.setOrderId(orderId);
-
             BeanUtils.copyProperties(productInfo,orderDetail);
             orderDetailRepository.save(orderDetail);
         }
@@ -94,8 +95,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderDTO> findList(String buyerOpenid, Pageable pageable) {
+    public Page<OrderDTO> findListByBuyerOpenid(String buyerOpenid, Pageable pageable) {
         Page<OrderMaster> orderMasterPage = orderMasterRepository.findByBuyerOpenid(buyerOpenid, pageable);
+
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+        Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
+
+        return orderDTOPage;
+    }
+
+    @Override
+    public Page<OrderDTO> findListByBuyerOpenidAndSellerId(String buyerOpenid, String sellerId, Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findByBuyerOpenidAndSellerId(buyerOpenid, sellerId,pageable);
+
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+        Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
+
+        return orderDTOPage;
+    }
+
+    @Override
+    public Page<OrderDTO> findListBySellerId(String sellerId, Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findBySellerId(sellerId,pageable);
 
         List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
         Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
@@ -182,12 +203,4 @@ public class OrderServiceImpl implements OrderService {
         return orderDTO;
     }
 
-    @Override
-    public Page<OrderDTO> findList(Pageable pageable) {
-        Page<OrderMaster> orderMasterPage = orderMasterRepository.findAll(pageable);
-
-        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
-        Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
-        return orderDTOPage;
-    }
 }

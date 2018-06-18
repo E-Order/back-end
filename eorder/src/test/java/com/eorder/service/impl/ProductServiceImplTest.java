@@ -31,7 +31,7 @@ public class ProductServiceImplTest {
 
     @Test
     public void findUpAll() {
-        List<ProductInfo> productInfoList = productService.findUpAll();
+        List<ProductInfo> productInfoList = productService.findUpAllBySellerId("123");
         Assert.assertNotEquals(0,productInfoList.size());
     }
 
@@ -39,7 +39,14 @@ public class ProductServiceImplTest {
     public void findAll() {
         //page 第几页 size 每页有多少个
         PageRequest request = new PageRequest(1,1);
-        Page<ProductInfo> productInfoPage = productService.findAll(request);
+        Page<ProductInfo> productInfoPage = productService.findAllBySellerId("123",request);
+        Assert.assertNotEquals(0, productInfoPage.getTotalElements());
+    }
+
+    @Test
+    public void fingByType() {
+        PageRequest request = new PageRequest(0,10);
+        Page<ProductInfo> productInfoPage = productService.findByTypeAndSellerId(2,"123",request);
         Assert.assertNotEquals(0, productInfoPage.getTotalElements());
     }
 
@@ -61,13 +68,13 @@ public class ProductServiceImplTest {
 
     @Test
     public void onSale() {
-        ProductInfo result = productService.onSale("123456");
+        ProductInfo result = productService.onSale("123456","123");
         Assert.assertEquals(ProductStatusEnum.UP.getCode(),result.getProductStatus());
     }
 
     @Test
     public void offSale() {
-        ProductInfo result = productService.offSale("123456");
+        ProductInfo result = productService.offSale("123456","123");
         Assert.assertEquals(ProductStatusEnum.DOWN.getCode(),result.getProductStatus());
     }
 }

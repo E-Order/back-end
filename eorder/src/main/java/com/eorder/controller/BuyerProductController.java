@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -33,21 +34,11 @@ public class BuyerProductController {
     private CategoryService categoryService;
 
     @GetMapping("/list")
-    public ResultVO list() {
+    public ResultVO list(@RequestParam("sellerId") String sellerId) {
         try {
             //1.查询所有上架商品
-            List<ProductInfo> productInfoList = productService.findUpAll();
-            //2.查询类目（一次性查询）
-            List<Integer> categoryTypeList = new ArrayList<>();
-            //传统方法
-            for (ProductInfo productInfo : productInfoList) {
-                categoryTypeList.add(productInfo.getCategoryType());
-            }
-            //精简方法(java8 , lambda)
-            // productInfoList.stream().map(e ->e.getCategoryType()).collect(Collectors.toList());
-
-            List<ProductCategory> productCategoryList =  categoryService.findByCategoryTypeIn(categoryTypeList);
-
+            List<ProductInfo> productInfoList = productService.findUpAllBySellerId(sellerId);
+            List<ProductCategory> productCategoryList = categoryService.findAllBySellerId(sellerId);
             //3.数据拼装
             List<ProductVO> productVOList = new ArrayList<>();
             for (ProductCategory productCategory: productCategoryList) {

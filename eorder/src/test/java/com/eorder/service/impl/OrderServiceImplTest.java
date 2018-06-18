@@ -49,7 +49,7 @@ public class OrderServiceImplTest {
         orderDetailList.add(o2);
         orderDTO.setOrderDetailList(orderDetailList);
 
-        OrderDTO result = orderService.create(orderDTO);
+        OrderDTO result = orderService.create(orderDTO,"123");
         log.info("【创建订单】 result={}", result);
         Assert.assertNotNull(result);
     }
@@ -64,7 +64,7 @@ public class OrderServiceImplTest {
     @Test
     public void findList() {
         PageRequest request = new PageRequest(0,2);
-        Page<OrderDTO> orderDTOPage = orderService.findList(BUYER_OPENID,request);
+        Page<OrderDTO> orderDTOPage = orderService.findListByBuyerOpenid(BUYER_OPENID,request);
         Assert.assertNotEquals(0,orderDTOPage.getTotalElements());
     }
 
@@ -89,11 +89,4 @@ public class OrderServiceImplTest {
         Assert.assertEquals(result.getPayStatus(), PayStatusEnum.SUCCESS.getCode());
     }
 
-    @Test
-    public void list() {
-        PageRequest request = new PageRequest(0,2);
-        Page<OrderDTO> orderDTOPage = orderService.findList(request);
-        //Assert.assertNotEquals(0,orderDTOPage.getTotalElements());
-        Assert.assertTrue("查询该商家的订单列表",orderDTOPage.getTotalElements() > 0);
-    }
 }

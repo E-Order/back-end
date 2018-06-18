@@ -38,7 +38,7 @@ public class ProductInfoRepositoryTest {
     @Test
     public void findByProductStatus() {
         //查询上架商品
-        List<ProductInfo> productInfoList = repository.findByProductStatus(0);
+        List<ProductInfo> productInfoList = repository.findByProductStatusAndSellerId(0,"123");
         Assert.assertNotEquals(0, productInfoList.size());
     }
 }
