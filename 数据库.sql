@@ -23,11 +23,16 @@ USE `e-order` ;
 CREATE TABLE IF NOT EXISTS `e-order`.`product_category` (
   `category_id` INT NOT NULL auto_increment,
   `category_name` VARCHAR(64) NOT NULL,
-  `category_type` INT NOT NULL unique,
+  `category_type` INT NOT NULL,
+  `seller_id` VARCHAR(32) NOT NULL,
   `create_time` timestamp not null default current_timestamp comment '创建时间',
   `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
   PRIMARY KEY (`category_id`),
-  INDEX `index_category_type` (`category_type` ASC))
+  Unique(`category_type`,`seller_id`),
+  INDEX `index_seller_id` (`seller_id` ASC),
+  CONSTRAINT `category_seller_id`
+	FOREIGN KEY (`seller_id`)
+	REFERENCES `e-order`.`seller_info` (`seller_id`))
 ENGINE = InnoDB;
 
 
@@ -43,24 +48,30 @@ CREATE TABLE IF NOT EXISTS `e-order`.`product_info` (
   `product_stock` INT NOT NULL DEFAULT 0,
   `product_status` TINYINT(3) default 0, 
   `category_type` INT NOT NULL,
+  `seller_id` VARCHAR(32) NOT NULL,
   `create_time` timestamp not null default current_timestamp comment '创建时间',
   `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
   PRIMARY KEY (`product_id`),
   INDEX `category_type_idx` (`category_type` ASC),
-  CONSTRAINT `category_type`
+  INDEX `seller_id_idx` (`seller_id` ASC),
+  CONSTRAINT `product_category_type`
     FOREIGN KEY (`category_type`)
     REFERENCES `e-order`.`product_category` (`category_type`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION,
+  CONSTRAINT `product_seller_id`
+	FOREIGN KEY (`seller_id`)
+	REFERENCES `e-order`.`seller_info` (`seller_id`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`order_master`
+-- Table `e-order`.`order_master`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `e-order`.`order_master` (
   `order_id` VARCHAR(32) NOT NULL,
   `desk_id` INT NOT NULL,
+  `seller_id` VARCHAR(32) NOT NULL,
   `buyer_openid` VARCHAR(64) NOT NULL,
   `order_amount` DECIMAL(8,2) NOT NULL,
   `order_status` TINYINT(3) NOT NULL DEFAULT 0,
@@ -68,7 +79,11 @@ CREATE TABLE IF NOT EXISTS `e-order`.`order_master` (
   `create_time` timestamp not null default current_timestamp comment '创建时间',
   `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
   PRIMARY KEY (`order_id`),
-  INDEX `index_buyer_openid` (`buyer_openid` ASC))
+  INDEX `index_buyer_openid` (`buyer_openid` ASC),
+  INDEX `index_seller` (`seller_id` ASC),
+  CONSTRAINT `order_seller_id`
+	FOREIGN KEY (`seller_id`)
+	REFERENCES `e-order`.`seller_info` (`seller_id`))
 ENGINE = InnoDB;
 
 
@@ -97,6 +112,20 @@ CREATE TABLE IF NOT EXISTS `e-order`.`order_detail` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `e-order`.`seller_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-order`.`seller_info` (
+  `seller_id` VARCHAR(32) NOT NULL,
+  `username` VARCHAR(32) NOT NULL unique, 
+  `password` VARCHAR(32) NOT NULL,
+  `telephone` VARCHAR(32) NOT NULL,
+  `address` VARCHAR(64) NOT NULL,
+  `create_time` timestamp not null default current_timestamp comment '创建时间',
+  `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
+  PRIMARY KEY (`seller_id`)
+)
+ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
