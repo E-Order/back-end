@@ -23,7 +23,9 @@ public class WeixinController {
     @GetMapping("/start")
     public String start(@RequestParam("code") String code) {
         //微信端登录code值
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=wx82355d216d366e15&secret=d9d4ffd4cbad38c637f2f51dc3f2df3f&js_code="+code+"&grant_type=authorization_code";
+        String appid = "wx3cf64998f8d0620d";
+        String secret = "45309d94006144ae9bbfc4eeeec71a9f";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+secret+"&js_code="+code+"&grant_type=authorization_code";
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(url, String.class);
         return response;
