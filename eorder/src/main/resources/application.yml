@@ -13,3 +13,4 @@ spring:
     port: 6379
 server:
   context-path: /eorder
+wechat:
