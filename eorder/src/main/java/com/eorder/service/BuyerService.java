@@ -12,4 +12,6 @@ public interface BuyerService {
 
     //取消订单
     OrderDTO cancelOrder(String openid, String orderId);
+    //支付订单
+    OrderDTO payOrder(String openid, String orderId);
 }

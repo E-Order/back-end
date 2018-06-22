@@ -35,6 +35,16 @@ public class BuyerServiceImpl implements BuyerService {
         return orderService.cancel(orderDTO);
     }
 
+    @Override
+    public OrderDTO payOrder(String openid, String orderId) {
+        OrderDTO orderDTO = checkOrderOwner(openid, orderId);
+        if (orderDTO == null) {
+            log.error("【支付订单】查不到该订单, orderId={}", orderId);
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+        return orderService.paid(orderDTO);
+    }
+
     private OrderDTO checkOrderOwner(String openid, String orderId) {
         OrderDTO orderDTO = orderService.findOne(orderId);
         if (orderDTO == null) {

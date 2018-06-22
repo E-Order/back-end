@@ -3,6 +3,7 @@ package com.eorder.service.impl;
 import com.eorder.converter.OrderMaster2OrderDTOConverter;
 import com.eorder.enums.OrderStatusEnum;
 import com.eorder.enums.PayStatusEnum;
+import com.eorder.service.WebSocket;
 import com.eorder.utils.KeyUtil;
 import com.eorder.enums.ResultEnum;
 import com.eorder.exception.SellException;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMasterRepository orderMasterRepository;
+
+    @Autowired
+    private WebSocket webSocket;
 
     @Override
     @Transactional
@@ -72,6 +78,8 @@ public class OrderServiceImpl implements OrderService {
         ).collect(Collectors.toList());
         productService.decreaseStock(cartDTOList);
 
+        //发送websocket消息
+        webSocket.sendMessage("您有新的订单:"+orderDTO.getOrderId());
         return orderDTO;
     }
 
@@ -122,6 +130,28 @@ public class OrderServiceImpl implements OrderService {
         Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
 
         return orderDTOPage;
+    }
+
+    @Override
+    public Page<OrderDTO> findListBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndDate(String sellerId, Integer deskId, Integer orderStatus, Integer payStatus, Date date, Pageable pageable) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        Date endDate = c.getTime();
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(sellerId, deskId, orderStatus, payStatus, date, endDate, pageable);
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+        Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
+
+        return orderDTOPage;
+    }
+
+    @Override
+    public long countBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(String sellerId, Integer deskId, Integer orderStatus, Integer payStatus, Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        Date endDate = c.getTime();
+        return orderMasterRepository.countOrderMastersBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(sellerId,deskId,orderStatus,payStatus,date, endDate);
     }
 
     @Override
@@ -200,6 +230,8 @@ public class OrderServiceImpl implements OrderService {
             throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
         }
         orderDTO.setPayStatus(PayStatusEnum.SUCCESS.getCode());
+        //发送websocket消息
+        webSocket.sendMessage("订单:"+orderDTO.getOrderId()+"已被支付");
         return orderDTO;
     }
 

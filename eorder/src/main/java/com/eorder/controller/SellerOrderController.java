@@ -1,30 +1,28 @@
 package com.eorder.controller;
 
-import com.eorder.VO.OrderDetailVO;
 import com.eorder.VO.ResultVO;
+import com.eorder.VO.ResultVO2;
 import com.eorder.converter.OrderDTO2OrderDetailConverter;
-import com.eorder.dataobject.OrderDetail;
-import com.eorder.dataobject.ProductInfo;
+
 import com.eorder.dto.OrderDTO;
 import com.eorder.dto.OrderDetailDTO;
-import com.eorder.enums.ResultEnum;
 import com.eorder.exception.SellException;
 import com.eorder.service.OrderService;
 import com.eorder.service.ProductService;
+import com.eorder.utils.ResultVO2Util;
 import com.eorder.utils.ResultVOUtil;
 import com.eorder.utils.SellerIdUtil;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 卖家端订单
@@ -45,22 +43,44 @@ public class SellerOrderController {
      * @param size 一冶有多少条数据
      * @return
      */
+
     @GetMapping("/list")
-    public ResultVO<List<OrderDTO>> list(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                         @RequestParam(value = "size", defaultValue = "10") Integer size,
-                                         HttpServletRequest httprequest) {
+    public ResultVO2<List<OrderDTO>> list(
+            @RequestParam("orderId") String orderId,
+            @RequestParam("deskId") Integer deskId,
+            @RequestParam("orderStatus") Integer orderStatus,
+            @RequestParam("payStatus") Integer payStatus,
+            @RequestParam("orderDate") String orderDate,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            HttpServletRequest httprequest) {
         String sellerId = SellerIdUtil.getSellerId(httprequest);
         try{
-            PageRequest request = new PageRequest(page, size);
-            Page<OrderDTO> orderDTOPage = orderService.findListBySellerId(sellerId,request);
-            return ResultVOUtil.success(orderDTOPage.getContent());
-        } catch (SellException e) {
+            if (StringUtils.isEmpty(orderId)) {
+                Date date = null;
+                if (!StringUtils.isEmpty(orderDate)) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+                    date = sdf.parse(orderDate);
+                }
+
+                PageRequest request = new PageRequest(page, size);
+                long total = orderService.countBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(sellerId, deskId, orderStatus, payStatus,date);
+                Page<OrderDTO> orderDTOPage = orderService.findListBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndDate(sellerId, deskId, orderStatus, payStatus, date, request);
+                return ResultVO2Util.success(total, orderDTOPage.getContent());
+            } else {
+                OrderDTO orderDTO = orderService.findOne(orderId);
+                return ResultVO2Util.success(1, orderDTO);
+            }
+
+        } catch (Exception e) {
             log.error("【卖家端查看订单】 查询失败 e={}");
-            return ResultVOUtil.error(e.getCode(), e.getMessage());
+            if (e instanceof SellException) {
+                return ResultVO2Util.error(((SellException)e).getCode(), e.getMessage());
+            }
         }
-
+        return null;
     }
-
     /**
      * 查看订单详情
      * @param orderId

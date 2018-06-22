@@ -40,6 +40,7 @@ import java.util.Map;
 @RequestMapping("/buyer/order")
 @Slf4j
 public class BuyerOrderController {
+
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -120,6 +121,21 @@ public class BuyerOrderController {
         try {
 
             buyerService.cancelOrder(openid,orderId);
+            return ResultVOUtil.success();
+        } catch (SellException e) {
+            return ResultVOUtil.error(e.getCode(), e.getMessage());
+        }
+
+    }
+    //支付订单
+
+    @PostMapping("/pay")
+    public ResultVO pay(@RequestParam("openid") String openid,
+                           @RequestParam("orderId") String orderId) {
+
+        try {
+
+            buyerService.payOrder(openid,orderId);
             return ResultVOUtil.success();
         } catch (SellException e) {
             return ResultVOUtil.error(e.getCode(), e.getMessage());

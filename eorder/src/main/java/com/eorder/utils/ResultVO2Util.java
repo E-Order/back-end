@@ -11,4 +11,11 @@ public class ResultVO2Util {
         resultVO.setData(object);
         return resultVO;
     }
+    public static ResultVO2 error(Integer code, String msg) {
+        ResultVO2 resultVO = new ResultVO2();
+        resultVO.setCode(code);
+        resultVO.setMsg(msg);
+
+        return resultVO;
+    }
 }
