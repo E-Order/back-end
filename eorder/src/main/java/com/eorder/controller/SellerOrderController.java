@@ -56,10 +56,11 @@ public class SellerOrderController {
             HttpServletRequest httprequest) {
         String sellerId = SellerIdUtil.getSellerId(httprequest);
         try{
+            Date date = null;
             if (StringUtils.isEmpty(orderId)) {
-                Date date = null;
+
                 if (!StringUtils.isEmpty(orderDate)) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
                     date = sdf.parse(orderDate);
                 }
@@ -132,5 +133,17 @@ public class SellerOrderController {
         }
         return ResultVOUtil.success();
     }
+    @PostMapping("pay")
+    public ResultVO pay(@RequestParam("orderId") String orderId) {
+        try {
+            OrderDTO orderDTO = orderService.findOne(orderId);
+            orderService.paid(orderDTO);
+        } catch (SellException e) {
+            log.error("【卖家端支付订单】 支付订单失败");
+            return ResultVOUtil.error(e.getCode(), e.getMessage());
+        }
+        return ResultVOUtil.success();
+    }
+
 
 }

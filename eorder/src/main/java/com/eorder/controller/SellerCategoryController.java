@@ -21,7 +21,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 卖家类目
@@ -107,6 +109,8 @@ public class SellerCategoryController {
             BeanUtils.copyProperties(categoryForm, productCategory);
             productCategory.setSellerId(sellerId);
             categoryService.save(productCategory);
+            Map<String, Integer> map = new HashMap<>();
+            map.put("categoryId", productCategory.getCategoryId());
             return ResultVOUtil.success();
         } catch (Exception e ) {
             if (e instanceof SellException) {

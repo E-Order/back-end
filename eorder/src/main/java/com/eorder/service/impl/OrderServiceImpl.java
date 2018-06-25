@@ -134,10 +134,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderDTO> findListBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndDate(String sellerId, Integer deskId, Integer orderStatus, Integer payStatus, Date date, Pageable pageable) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        Date endDate = c.getTime();
+        Date endDate = null;
+        if (date != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            endDate = c.getTime();
+        }
         Page<OrderMaster> orderMasterPage = orderMasterRepository.findBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(sellerId, deskId, orderStatus, payStatus, date, endDate, pageable);
         List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
         Page<OrderDTO> orderDTOPage = new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
@@ -147,10 +150,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public long countBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(String sellerId, Integer deskId, Integer orderStatus, Integer payStatus, Date date) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        Date endDate = c.getTime();
+        Date endDate = null;
+        if (date != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            endDate = c.getTime();
+        }
+
         return orderMasterRepository.countOrderMastersBySellerIdAndDeskIdAndOrderStatusAndPayStatusAndCreateTime(sellerId,deskId,orderStatus,payStatus,date, endDate);
     }
 
@@ -213,12 +220,12 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO paid(OrderDTO orderDTO) {
         OrderMaster orderMaster = orderMasterRepository.findOne(orderDTO.getOrderId());
         //判断订单状态
-        if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.New.getCode())) {
+        if (orderMaster.getOrderStatus().equals(OrderStatusEnum.CANCEL.getCode())) {
             log.error("【订单支付】 订单状态不正确, orderId={}, orderStatue={}", orderMaster.getOrderId(),orderMaster.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
         }
         //判断支付状态
-        if (!orderMaster.getPayStatus().equals(PayStatusEnum.Wait)) {
+        if (!orderMaster.getPayStatus().equals(PayStatusEnum.Wait.getCode())) {
             log.error("【订单支付】 订单支付状态不正确, orderId={}, orderStatue={}", orderMaster.getOrderId(),orderMaster.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_PAY_STATUS_ERROR);
         }
