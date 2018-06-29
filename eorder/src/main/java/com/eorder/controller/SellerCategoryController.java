@@ -111,7 +111,7 @@ public class SellerCategoryController {
             categoryService.save(productCategory);
             Map<String, Integer> map = new HashMap<>();
             map.put("categoryId", productCategory.getCategoryId());
-            return ResultVOUtil.success();
+            return ResultVOUtil.success(map);
         } catch (Exception e ) {
             if (e instanceof SellException) {
                 return ResultVOUtil.error(((SellException)e).getCode(), e.getMessage());
