@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- *
- * 2017-07-30 17:44
- */
 @RestControllerAdvice
 public class SellerExceptionHandler {
 
