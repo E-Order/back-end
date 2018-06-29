@@ -22,10 +22,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Created by 廖师兄
- * 2017-07-30 17:31
- */
 @Aspect
 @Component
 @Slf4j
