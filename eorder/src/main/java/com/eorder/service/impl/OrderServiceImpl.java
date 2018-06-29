@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         productService.decreaseStock(cartDTOList);
 
         //发送websocket消息
-        webSocket.sendMessage("您有新的订单:"+orderDTO.getOrderId());
+        webSocket.sendMessage("您有新的订单: "+orderDTO.getOrderId(), sellId);
         return orderDTO;
     }
 
@@ -238,7 +238,7 @@ public class OrderServiceImpl implements OrderService {
         }
         orderDTO.setPayStatus(PayStatusEnum.SUCCESS.getCode());
         //发送websocket消息
-        webSocket.sendMessage("订单:"+orderDTO.getOrderId()+"已被支付");
+        webSocket.sendMessage("订单:"+orderDTO.getOrderId()+"已被支付", orderMaster.getSellerId());
         return orderDTO;
     }
 

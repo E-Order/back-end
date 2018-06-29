@@ -1,0 +1,10 @@
+com\eorder\repository\ProductCategoryRepositoryTest.class
+com\eorder\repository\SellerInfoRepositoryTest.class
+com\eorder\repository\OrderDetailRepositoryTest.class
+com\eorder\EorderApplicationTests.class
+com\eorder\service\impl\SellerServiceImplTest.class
+com\eorder\repository\OrderMasterRepositoryTest.class
+com\eorder\repository\ProductInfoRepositoryTest.class
+com\eorder\service\impl\CategoryServiceImplTest.class
+com\eorder\service\impl\ProductServiceImplTest.class
+com\eorder\service\impl\OrderServiceImplTest.class

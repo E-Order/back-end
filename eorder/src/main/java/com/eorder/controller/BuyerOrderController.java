@@ -134,7 +134,6 @@ public class BuyerOrderController {
                            @RequestParam("orderId") String orderId) {
 
         try {
-
             buyerService.payOrder(openid,orderId);
             return ResultVOUtil.success();
         } catch (SellException e) {
