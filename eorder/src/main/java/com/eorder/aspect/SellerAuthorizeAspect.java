@@ -22,6 +22,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 用户认证
+ */
 @Aspect
 @Component
 @Slf4j

@@ -1,0 +1,40 @@
+version: '2'
+services:
+  mysql:
+    restart: always
+    build: mysql/.
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - /opt/mysql_data:/var/lib/mysql
+    networks:
+      - mysql_nw
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    networks:
+      - redis_nw
+    ports:
+      - "6379:6379"
+  eorder:
+    build: backend/.
+    container_name: eorder
+	ports：
+	  - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mysql_nw
+      - web_nw
+      - redis_nw
+networks:
+  mysql_nw:
+    driver: bridge
+  web_nw:
+    driver: bridge
+  redis_nw:
+    driver: bridge

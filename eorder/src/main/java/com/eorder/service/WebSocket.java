@@ -27,10 +27,11 @@ public class WebSocket {
     @OnOpen
     public void onOpen(@PathParam(value = "token") String param, Session session) {
         this.session = session;
-        this.token = redisTemplate.opsForValue().get(String.format("token_%s", param));
+        this.token = param;
+        //this.token = redisTemplate.opsForValue().get(String.format("token_%s", param));
         webSocketSet.add(this);
         log.info("【websocket消息】 有新的连接， 总数：{}", webSocketSet.size());
-        log.info(this.token);
+        //log.info(this.token);
 
     }
     @OnClose
@@ -46,8 +47,8 @@ public class WebSocket {
 
     public void sendMessage(String message, String sellerId) {
         for (WebSocket webSocket : webSocketSet) {
-
-            if (webSocket.token.equals(sellerId)) {
+            String temp = redisTemplate.opsForValue().get(String.format("token_%s", webSocket.token));
+            if (temp.equals(sellerId)) {
                 log.info("【websocket消息】 发送消息， message={}",message);
                 try {
                     webSocket.session.getBasicRemote().sendText(message);

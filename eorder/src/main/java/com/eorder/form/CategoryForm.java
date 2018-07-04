@@ -12,6 +12,4 @@ public class CategoryForm {
 
     /** 类目编号. */
     private Integer categoryType;
-
-
 }
