@@ -16,6 +16,7 @@ import java.util.Date;
 @Entity
 @Data
 @DynamicUpdate
+@DynamicInsert
 public class ProductCategory {
      /* 类目id.主键自增*/
      @Id
