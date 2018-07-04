@@ -14,6 +14,7 @@ import java.util.Date;
 @Entity
 @Data
 @DynamicUpdate
+@DynamicInsert
 public class ProductInfo {
     //@ID代表主键
     @Id
